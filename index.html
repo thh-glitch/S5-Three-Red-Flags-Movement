@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三面紅旗運動：基層幹部檔案室與溫習系統</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'retro-bg': '#d8cdbe',
+                        'party-red': '#c1272d',
+                        'vintage-paper': '#fdf6e3',
+                        'news-paper': '#e8e2d2',
+                    },
+                    fontFamily: {
+                        'serif': ['"Noto Serif TC"', 'serif'],
+                        'hei': ['"Noto Sans TC"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <style>
+        body {
+            font-family: 'Noto Serif TC', serif;
+            background-color: #d8cdbe;
+            background-image: linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .retro-shadow { box-shadow: 6px 6px 0px rgba(0,0,0,0.7); }
+        .doc-report { background-color: #fff; border-top: 8px solid #c1272d; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .doc-quote { background-color: #fdf2f2; border-left: 6px solid #c1272d; font-style: italic; }
+        .doc-news { background-color: #e8e2d2; border: 1px solid #999; font-family: 'Noto Sans TC', sans-serif; position: relative; }
+        .doc-news::before { content: "報章剪報"; position: absolute; top: -10px; left: 10px; background: #333; color: #fff; font-size: 0.7rem; padding: 2px 6px; }
+        .doc-rumor { background-color: #f0f4f8; border: 1px dashed #627d98; font-family: 'Noto Serif TC', serif; transform: rotate(-1deg); }
+        .btn-option, .game-btn { transition: all 0.2s ease-in-out; font-family: 'Noto Sans TC', sans-serif; cursor: pointer; }
+        .btn-option:hover:not(:disabled), .game-btn:hover:not(:disabled) { transform: translateY(-2px) scale(1.01); box-shadow: 4px 4px 0px rgba(193, 39, 45, 0.4); border-color: #c1272d; }
+        .disabled-option { opacity: 0.6; cursor: not-allowed; filter: grayscale(80%); }
+        .stamp { position: absolute; top: 10px; right: 10px; color: red; font-size: 1.5rem; font-weight: 900; border: 3px solid red; padding: 2px 10px; transform: rotate(15deg); opacity: 0.8; border-radius: 4px; }
+    </style>
+</head>
+<body class="text-gray-900 min-h-screen py-10 px-4 md:px-0">
+
+    <div class="max-w-4xl mx-auto">
+        <header class="text-center mb-12 animate__animated animate__fadeInDown">
+            <h1 class="text-4xl md:text-5xl font-black text-party-red mb-4 tracking-wider">
+                <i class="fa-solid fa-folder-open text-3xl"></i> 縣委幹部辦公桌 (1958)
+            </h1>
+            <p class="text-xl font-bold bg-gray-900 text-white inline-block px-6 py-2 retro-shadow">高度機密：歷史決策因果推理系統</p>
+            <p class="mt-6 text-gray-800 font-bold bg-white/50 p-4 rounded border border-gray-400 leading-loose">
+                你的桌上每天都會堆滿來自中央的指示、報章的宣傳、以及基層的暗中匯報。<br>請仔細閱讀史料，並透過<span class="text-red-700">連鎖因果追問</span>，拼湊出歷史悲劇是如何一步步發生的。
+            </p>
+        </header>
+
+        <div id="game-container" class="space-y-16"></div>
+        <div id="minigame-container" class="space-y-16 mt-8"></div>
+        <div id="assessment-container" class="space-y-16 mt-16"></div>
+        <div id="notes-container" class="space-y-16 mt-16 pb-20"></div>
+    </div>
+
+    <script>
+        // 完全保留第一版的豐富史料內容，但改為「因果鍊三連問」
+        const stages = [
+            {
+                id: 1, chapter: "第一階段：空前的自信與狂熱", title: "卷宗 01：一五計劃的驚人捷報",
+                documents: [
+                    { type: "doc-report", title: "📄 《發展國民經濟的第一個五年計劃》統計局內參", content: "工農業總產值增長率高達18% (原計畫僅14.7%)。為建立社會主義工業化初步基礎，已集中力量進行建設，包括蘇聯幫助設計的156個項目及694個大中型建設項目。" },
+                    { type: "doc-quote", title: "🎙️ 最高指示 (摘自莫斯科會議講話)", content: "「赫魯雪夫同志告訴我們,十五年可以趕上美國。……我們大家努力,十五年內可以趕上或者超過英國。……現在大躍進是一個問題,要搞得好。」" },
+                    { type: "doc-news", title: "🗞️ 黨內檢討通報 (周恩來於八大二次會議)", content: "「1956年下半年和1957年上半年的反冒進,是錯誤的。……錯誤的實質,是沒有把經濟建設的速度問題提到政治的高度來看待,以致挫傷了廣大群眾的積極性。」" }
+                ],
+                context: "你剛接任縣委書記。看著桌上這些文件，一五計劃的成功讓全國陷入狂熱，連總理都因為「反冒進」而被迫檢討。",
+                questions: [
+                    {
+                        q: "從上述史料可見，一五計劃超額完成後，黨內出現了什麼樣的風氣？",
+                        options: [
+                            { text: "謹慎評估、穩紮穩打的風氣", isCorrect: false, feedback: "❌ 錯誤。在巨大的成功面前，黨內並未保持冷靜。" },
+                            { text: "盲目樂觀、「急功冒進」的風氣", isCorrect: true, feedback: "✅ 正確。一五計畫的意外成功讓黨內過度自信，產生了急於求成的冒進情緒。" }
+                        ]
+                    },
+                    {
+                        q: "從哪一份史料的言論中，最能明顯看出當時設定了不切實際的高指標？",
+                        options: [
+                            { text: "最高指示提出「十五年內可以趕上或者超過英國」", isCorrect: true, feedback: "✅ 正確。這個缺乏科學與工業基礎根據的極高目標，開啟了盲目追求速度的災難。" },
+                            { text: "統計局報告指出工農業增長率達18%", isCorrect: false, feedback: "❌ 這是過去已完成的統計數據，並非未來設定的虛高指標。" }
+                        ]
+                    },
+                    {
+                        q: "面對即將到來的年度經濟會議，在這種政治氛圍下，你會如何定調本縣的發展計畫？",
+                        options: [
+                            { text: "提出客觀合理的發展計畫，確保基層承受得住。", isCorrect: false, feedback: "❌ 警告！周恩來剛因「反冒進」被逼檢討。提出客觀計畫會立刻被批鬥為「右傾保守」。" },
+                            { text: "迎合冒進氣氛，提出極具野心、難以達成的發展指標。", isCorrect: true, feedback: "✅ 這是你在當時體制下的生存本能。為了避免被劃分為反對分子，幹部只能盲目跟從，為將來的悲劇埋下伏筆。" }
+                        ]
+                    }
+                ],
+                supplement: "在政治壓力下，經濟發展不再基於客觀規律，而是基於領導人的意志與政治站位。"
+            },
+            {
+                id: 2, chapter: "", title: "卷宗 02：老大哥的背影",
+                documents: [
+                    { type: "doc-news", title: "🗞️ 《人民日報》、《紅旗》雜誌社論", content: "「蘇共領導在同美帝國主義的關係方面,推行『三和』路線(即和平共處、和平競賽、和平過渡)。…實際上是以犧牲世界人民革命利益為代價,來換取同美帝國主義妥協。」" },
+                    { type: "doc-rumor", title: "🤫 省委機密耳語", content: "中蘇交惡了！蘇聯正在撤走在華專家，全面中止所有科技合作。而且我們發現，蘇聯那套工業模式需要大量資金和高技術，根本不符合我們中國人口多、資金少的國情。" }
+                ],
+                context: "外部局勢突變。蘇聯老大哥撤走了援助，資金與技術瞬間斷裂。但中央依然要求加速推行社會主義建設。",
+                questions: [
+                    {
+                        q: "根據上述情報，中國的外部局勢發生了什麼重大危機？",
+                        options: [
+                            { text: "遭到西方資本主義國家的全面軍事封鎖", isCorrect: false, feedback: "❌ 史料中主要提到的是與社會主義陣營內部的決裂。" },
+                            { text: "中蘇交惡，蘇聯撤走所有在華專家與中止技術合作", isCorrect: true, feedback: "✅ 正確。蘇共推行「三和」路線引發中共不滿，導致蘇聯撤離，中國瞬間失去技術與資金依靠。" }
+                        ]
+                    },
+                    {
+                        q: "面對失去蘇聯技術與資金援助，中央是否有放棄原先「超英趕美」的發展目標？",
+                        options: [
+                            { text: "沒有放棄，反而發布「鼓足幹勁，力爭上游」的總路線繼續衝刺。", isCorrect: true, feedback: "✅ 正確。中共不僅沒有退縮，反而因為意識形態的決裂，更急於向世界證明自己的路線是正確的。" },
+                            { text: "有放棄，決定退回傳統農業社會穩步發展。", isCorrect: false, feedback: "❌ 錯誤。中央並未放棄高速工業化的夢想。" }
+                        ]
+                    },
+                    {
+                        q: "在缺乏外國專家、資金與技術的情況下，中央打算靠什麼來強行完成發展指標？",
+                        options: [
+                            { text: "力求自力更新，試圖利用龐大的人口優勢與「群眾運動」來加速發展。", isCorrect: true, feedback: "✅ 正確。中央決定探索適合中國國情的新路，試圖用「人海戰術」和群眾狂熱來彌補技術的不足。這直接催生了各種全民運動。" },
+                            { text: "轉向尋求美國等資本主義國家的貸款。", isCorrect: false, feedback: "❌ 在冷戰高峰期，這是不可能發生的決策。" }
+                        ]
+                    }
+                ],
+                supplement: "沒有了蘇聯的機器，中國決定用無數農民的雙手來煉鋼。",
+                postGame: "game1" // 第一階段背景結束，觸發填充題
+            },
+            {
+                id: 3, chapter: "第二階段：大躍進的荒謬與代價", title: "卷宗 03：鋼鐵洪流的死命令",
+                documents: [
+                    { type: "doc-report", title: "📄 國務院緊急指示", content: "為在十五年內「超英趕美」，實施「以鋼為綱」。今年鋼產量必須「翻一番」，藉高速度生產帶動全國工業發展！" },
+                    { type: "doc-rumor", title: "📝 下鄉幹部實地筆記 (季羡林《牛棚雜憶》)", content: "「我們建了兩個煉鐵爐……所謂『鐵』，就是把家家戶戶的鐵鍋、鐵壺、鐵勺、鐵鏟、鐵耙，凡是『鐵』字號的東西，都投到高爐中...大家心裡都在流血，臉上卻帶著莫名其妙的笑容。」" }
+                ],
+                context: "中央的死命令下來了。本縣根本沒有足夠的現代化煉鋼設備。村裡的農民連種田的時間都沒有了，全被拉去建土高爐。",
+                questions: [
+                    {
+                        q: "為達成十五年內「超英趕美」，中央下達了什麼與工業發展有關的死命令？",
+                        options: [
+                            { text: "實施「以鋼為綱」，要求今年鋼產量必須「翻一番」。", isCorrect: true, feedback: "✅ 正確。鋼鐵被視為工業的骨幹，中央下達了極為嚴苛且脫離現實的鋼產量指標。" },
+                            { text: "要求全國建設一百個大型現代化工廠。", isCorrect: false, feedback: "❌ 失去蘇聯援助後，中國已無力建設大量現代化工廠，只能下達產量指標。" }
+                        ]
+                    },
+                    {
+                        q: "面對缺乏現代化煉鋼設備的困境，基層幹部與農民被迫採取了什麼極端手段來湊足鋼產量？",
+                        options: [
+                            { text: "花費重金向黑市購買國外鋼鐵來冒充。", isCorrect: false, feedback: "❌ 當時農村極度貧窮且封閉，不可能有此途徑。" },
+                            { text: "發動「全民大煉鋼」，把家家戶戶的鐵鍋、農具投入土高爐中熔煉。", isCorrect: true, feedback: "✅ 正確。為了交差，民間的生活必需品和生產工具都被強行砸碎當作「原料」。" }
+                        ]
+                    },
+                    {
+                        q: "這種違背科學的狂熱煉鋼運動，最終為國家經濟帶來了什麼實質連鎖影響？",
+                        options: [
+                            { text: "產出大量毫無工業價值的廢鐵，並因抽調大批勞動力而荒廢了農業秋收。", isCorrect: true, feedback: "✅ 痛心的事實。不僅浪費了物資與砍伐樹木，最致命的是幾千萬青壯年去煉鋼，導致農田裡的莊稼無人收割爛在地裡。" },
+                            { text: "雖然初期艱辛，但成功為中國打下了重工業的基礎。", isCorrect: false, feedback: "❌ 土法煉出來的都是含有大量雜質的鐵疙瘩，無法用於工業。" }
+                        ]
+                    }
+                ],
+                supplement: "薄一波回憶：「1958年鋼產量1108萬噸，合格的只有800萬噸。土法煉鐵成本比大高爐高好幾倍...國家為此付出沉重代價。」"
+            },
+            {
+                id: 4, chapter: "", title: "卷宗 04：違背科學的「衛星田」",
+                documents: [
+                    { type: "doc-news", title: "🗞️ 《人民日報》頭版頭條", content: "農業的「大躍進」！提倡「以糧為綱」，大搞衛星田！只要實行「深耕密植、足水足肥」，人有多大膽，地有多大產！" },
+                    { type: "doc-report", title: "⚠️ 農業專家的絕密警告 (被扣留)", content: "「過度密植嚴重破壞作物個體發育...發生惡性競爭，植株瘦弱爛死。盲目深翻將貧瘠的底層生土翻到地表，稀釋了寶貴的表層沃土，破壞土壤結構。」" },
+                    { type: "doc-rumor", title: "😭 農民丁抒的哭訴", content: "「上面號召深翻土地...地是翻了個底朝天，但莊稼需要的是地表熟土。又說密植好...結果稻子密得像梳子不見陽光，抽不了穗爛在地裡。秋後一算，畝產還不到去年三成。」" }
+                ],
+                context: "你讀到了這三份截然不同的材料。中央報紙鼓吹奇蹟，基層農民卻在哭訴絕收。",
+                questions: [
+                    {
+                        q: "根據報章宣傳與專家的警告，中央強行推廣的「深耕密植」政策有何矛盾？",
+                        options: [
+                            { text: "報紙鼓吹能創造高產奇蹟，專家卻警告這會嚴重破壞土壤與作物生長。", isCorrect: true, feedback: "✅ 正確。長官意志完全凌駕了農業科學規律。" },
+                            { text: "報紙認為成本太高，專家認為成本很低。", isCorrect: false, feedback: "❌ 矛盾的焦點在於對產量的預期與是否符合科學。" }
+                        ]
+                    },
+                    {
+                        q: "秋收時，農民的實際遭遇證明了哪一方的說法才是正確的？",
+                        options: [
+                            { text: "報紙正確，確實出現了「人有多大膽，地有多大產」。", isCorrect: false, feedback: "❌ 這是當時宣傳的謊言。" },
+                            { text: "專家正確，作物見不到陽光爛在地裡，畝產不到去年三成。", isCorrect: true, feedback: "✅ 正確。違反自然規律的蠻幹，換來的是糧食的大幅減產。" }
+                        ]
+                    },
+                    {
+                        q: "面對絕收的現實，看著鄰縣在報紙上吹噓「畝產三萬斤」，為了避免被上級懲罰，多數幹部會怎麼做？",
+                        options: [
+                            { text: "聯名上書中央，舉報鄰縣造假，並反映農村減產的真實情況。", isCorrect: false, feedback: "❌ 在大躍進時期，說真話會被打成「右傾機會主義分子」，面臨殘酷批鬥。" },
+                            { text: "跟著向上級誇大農作成果，虛報產量，推波助瀾形成全國性的「浮誇風」。", isCorrect: true, feedback: "✅ 正確。在強大的政治高壓下，浮誇造假成了唯一的生存之道。各縣競相吹牛，陷入惡性循環。" }
+                        ]
+                    }
+                ],
+                supplement: "虛假資料誤導了領導層，讓他們過分樂觀，進一步制定出更加脫離現實的千斤萬斤經濟指標。",
+                postGame: "game2" // 第二階段大躍進結束，觸發分類題
+            },
+            {
+                id: 5, chapter: "第三階段：制度崩潰與大饑荒", title: "卷宗 05：奪命的高徵購",
+                documents: [
+                    { type: "doc-quote", title: "🎙️ 國家糧食局指令", content: "「糧食徵購任務是按產量計算的，並且是硬任務，必須完成！完不成徵購任務，就是『瞞產私分』，就是『跟黨不是一條心』！」" },
+                    { type: "doc-report", title: "🩸 四川省前任地委書記的慘痛回憶", content: "「為了完成徵購，我們搞起了『反瞞產私分運動』...為了逼出糧食，捆、綁、吊、打、各種刑罰都用上了。他們把糞便塞進農民嘴裡逼供...農民的口糧、種子糧、飼料糧全被搜出來收走...人怎麼能不餓死？」" }
+                ],
+                context: "因為之前吹牛上報了假產量，現在中央按「假產量」下達了極高的真實徵購任務。農民家裡已經一粒米都不剩了。",
+                questions: [
+                    {
+                        q: "由於之前各級幹部虛報糧食產量（浮誇風），導致中央產生了什麼致命誤判？",
+                        options: [
+                            { text: "以為糧食大豐收，按「假高產」下達了極高比例的真實徵購任務。", isCorrect: true, feedback: "✅ 正確。中央計算：既然你說畝產幾萬斤，那國家徵收幾千斤根本不算多。" },
+                            { text: "以為農村不需要農業工具，停止了所有的物資供應。", isCorrect: false, feedback: "❌ 核心問題出在對糧食產量的嚴重錯估。" }
+                        ]
+                    },
+                    {
+                        q: "當農民實際上根本交不出國家要求的龐大糧食數量時，基層工作隊採取了什麼行動？",
+                        options: [
+                            { text: "向上級如實報告農村缺糧，請求減免徵購。", isCorrect: false, feedback: "❌ 完不成任務就是「跟黨不是一條心」，無人敢如實報告。" },
+                            { text: "認定農民是「瞞產私分」，動用各種暴力酷刑逼迫農民交出糧食。", isCorrect: true, feedback: "✅ 正確。為了完成硬任務，幹部化身酷吏，對農民進行了殘酷的搜刮與迫害。" }
+                        ]
+                    },
+                    {
+                        q: "梳理以上因果，幹部的「浮誇風」最終是如何直接導致農村爆發大饑荒的？",
+                        options: [
+                            { text: "高指標導致高估產，高估產引發「高徵購」，最終把農民賴以活命的口糧和明年播種的種子糧全搜刮一空。", isCorrect: true, feedback: "✅ 這是最殘酷的因果鏈。沒有了口糧直接餓死，沒有了種子糧意味著明年繼續絕收。" },
+                            { text: "浮誇風導致糧食全部被拿去支援亞非拉國家，國內沒有留存。", isCorrect: false, feedback: "❌ 饑荒的主因是內部的高徵購將基層糧食搜刮殆盡。" }
+                        ]
+                    }
+                ],
+                supplement: "楊繼繩指出：「高指標、高估產、高徵購，是餓死人的幾個關鍵環節。」這是一場徹頭徹尾的人禍。"
+            },
+            {
+                id: 6, chapter: "", title: "卷宗 06：人民公社與大鍋飯",
+                documents: [
+                    { type: "doc-report", title: "📄 關於建立人民公社的決議", content: "高級農業生產合作社合併為人民公社。以「一大二公」為特色（規模大、全社公有）。取消按勞取酬，改為供給制。設立公共食堂，實行「吃飯不要錢」。農民自留地歸公社所有。" },
+                    { type: "doc-rumor", title: "🗣️ 農村社員的抱怨 (李銳《廬山會議實錄》)", content: "「『共產風』、『大鍋飯』...社員們說：『幹不幹,都一樣,都吃食堂大鍋飯。』既然幹多幹少一個樣，誰還願意多干呢？把人家的鍋砸了，自留地收了，生產積極性從何而來？」" },
+                    { type: "doc-news", title: "🥣 食堂炊事員的觀察 (楊繼繩《墓碑》)", content: "「食堂浪費驚人。飯菜做不好只能倒掉餵豬；管理混亂，發霉生蟲被老鼠吃；幹部多吃多佔...一半是人吃的，一半是浪費糟蹋掉的。」" }
+                ],
+                context: "財產全部充公，農民進入了「共產主義生活」。初期食堂確實敞開肚皮吃，但好景不長，不到三個月糧倉就見底了。",
+                questions: [
+                    {
+                        q: "人民公社的制度設計中，最破壞舊有經濟規則的特色是什麼？",
+                        options: [
+                            { text: "允許農民自由買賣土地，發展資本主義市場。", isCorrect: false, feedback: "❌ 完全相反，公社消滅了所有私有財產。" },
+                            { text: "取消按勞取酬，實行財產全歸公有的「一大二公」與供給制（大鍋飯）。", isCorrect: true, feedback: "✅ 正確。連自留地和家裡的鍋都被沒收，一切依賴公社分配。" }
+                        ]
+                    },
+                    {
+                        q: "這種「幹多幹少一個樣」的大鍋飯制度，對農業生產力造成了什麼致命打擊？",
+                        options: [
+                            { text: "破壞了多勞多得的原則，徹底消滅了農民下田勞動的生產積極性。", isCorrect: true, feedback: "✅ 正確。既然努力沒有回報，偷懶也不會捱餓（初期），農產量自然大幅滑落。" },
+                            { text: "讓農民有更多時間學習科學種田技術。", isCorrect: false, feedback: "❌ 實際上農民只是消極怠工。" }
+                        ]
+                    },
+                    {
+                        q: "除了生產停滯，公社強制推行的「公共食堂」還引發了什麼加速崩潰的危機？",
+                        options: [
+                            { text: "食堂飯菜太好，導致農民過度肥胖引發健康問題。", isCorrect: false, feedback: "❌ 這是完全脫離歷史現實的猜測。" },
+                            { text: "「吃飯不要錢」造成極其嚴重的糧食浪費，加上幹部多吃多佔，讓本就虛報庫存的糧倉迅速見底。", isCorrect: true, feedback: "✅ 正確。不生產加上瘋狂消耗，當糧倉見底食堂停火時，農民家裡又沒有鍋和自留地，只能坐等餓死。" }
+                        ]
+                    }
+                ],
+                supplement: "人民公社將「無產階級專政」貫徹到了每一個人的肚子裡。幹部掌握了分飯的權力，聽話就有飯吃，不聽話就餓死。",
+                postGame: "game3" // 第三階段結束，觸發是非題
+            }
+        ];
+
+        let currentStageIndex = 0;
+
+        function renderStage(index) {
+            if (index >= stages.length) return;
+            const container = document.getElementById('game-container');
+            const stage = stages[index];
+
+            let html = '';
+            if (stage.chapter) {
+                html += `<div class="col-span-full mt-12 mb-6 animate__animated animate__fadeIn"><div class="flex items-center justify-center space-x-4"><div class="h-1 flex-1 bg-red-800"></div><h2 class="text-3xl font-black text-red-900 px-4">${stage.chapter}</h2><div class="h-1 flex-1 bg-red-800"></div></div></div>`;
+            }
+
+            // Render Documents
+            let docsHTML = '<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">';
+            stage.documents.forEach((doc, i) => {
+                let colSpan = (stage.documents.length % 2 !== 0 && i === stage.documents.length - 1) ? 'md:col-span-2' : '';
+                let extClass = doc.type === 'doc-rumor' ? 'doc-rumor' : doc.type === 'doc-quote' ? 'doc-quote' : doc.type === 'doc-news' ? 'doc-news' : 'doc-report';
+                docsHTML += `<div class="p-4 rounded shadow-sm ${extClass} ${colSpan}">${doc.type === 'doc-report' ? '<div class="stamp">機密</div>' : ''}<h4 class="font-bold mb-2 text-gray-800 text-lg border-b border-gray-300 pb-1">${doc.title}</h4><p class="text-gray-700 leading-relaxed">${doc.content}</p></div>`;
+            });
+            docsHTML += '</div>';
+
+            // Render Questions Chain (initially only show Q0)
+            let questionsHTML = `<div class="space-y-6" id="q-container-${index}">`;
+            stage.questions.forEach((qObj, qIndex) => {
+                let hiddenClass = qIndex === 0 ? '' : 'hidden';
+                questionsHTML += `
+                    <div id="q-block-${index}-${qIndex}" class="q-block bg-white/80 p-5 rounded border-2 border-red-200 shadow-sm ${hiddenClass} animate__animated animate__fadeInDown">
+                        <p class="text-xl font-bold text-party-red mb-4 leading-relaxed"><i class="fa-solid fa-link mr-2"></i> 追問 ${qIndex + 1}/${stage.questions.length}：${qObj.q}</p>
+                        <div class="space-y-3" id="options-${index}-${qIndex}">
+                            ${qObj.options.map((opt, optIndex) => `
+                                <button onclick="handleChainSelection(${index}, ${qIndex}, ${optIndex}, ${opt.isCorrect})" class="btn-option w-full text-left p-4 rounded bg-white border-2 border-gray-400 text-lg font-bold text-gray-800 flex items-start hover:bg-gray-50 transition">
+                                    <span class="mr-3 mt-1 inline-block bg-gray-200 px-2 py-0.5 rounded text-sm">${String.fromCharCode(65 + optIndex)}</span><span>${opt.text}</span>
+                                </button>
+                            `).join('')}
+                        </div>
+                        <div id="feedback-${index}-${qIndex}" class="hidden mt-4 p-4 rounded-lg font-bold text-lg animate__animated animate__fadeIn"></div>
+                    </div>
+                `;
+            });
+            questionsHTML += `</div>`;
+
+            html += `
+                <div id="stage-${index}" class="bg-[#f4ebd8] rounded-xl p-6 md:p-8 retro-shadow border-2 border-[#b5a38c] animate__animated animate__fadeInUp relative">
+                    <div class="absolute top-0 left-0 w-full h-2 bg-party-red rounded-t-xl"></div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6 flex items-center"><span class="bg-gray-900 text-white px-3 py-1 rounded mr-3 text-lg">${index + 1}</span>${stage.title}</h3>
+                    
+                    ${docsHTML}
+                    
+                    <div class="bg-white/60 p-5 rounded border border-[#b5a38c] mb-6">
+                        <p class="text-gray-800 text-lg font-bold leading-relaxed"><i class="fa-solid fa-user-tie text-gray-600 mr-2"></i> 【幹部處境】${stage.context}</p>
+                    </div>
+                    
+                    <!-- 因果追問區 -->
+                    ${questionsHTML}
+                    
+                    <div id="supplement-${index}" class="hidden mt-6 p-5 bg-yellow-50 border-l-8 border-yellow-400 text-gray-800 rounded animate__animated animate__fadeIn shadow-inner">
+                        <div class="font-black text-yellow-800 mb-2 text-lg"><i class="fa-solid fa-lightbulb"></i> 歷史真相解析：</div>
+                        <div class="leading-relaxed font-medium">${stage.supplement}</div>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', html);
+            scrollToEl(`stage-${index}`);
+        }
+
+        function handleChainSelection(stageIndex, qIndex, optionIndex, isCorrect) {
+            const stage = stages[stageIndex];
+            const qObj = stage.questions[qIndex];
+            const btns = document.querySelectorAll(`#options-${stageIndex}-${qIndex} button`);
+            const fb = document.getElementById(`feedback-${stageIndex}-${qIndex}`);
+            
+            btns.forEach((btn, idx) => {
+                btn.disabled = true;
+                if(idx === optionIndex) {
+                    btn.classList.add(isCorrect ? 'bg-green-50' : 'bg-red-50', isCorrect ? 'border-green-600' : 'border-red-600', isCorrect ? 'text-green-900' : 'text-red-900');
+                    btn.querySelector('span:first-child').classList.add(isCorrect ? 'bg-green-600' : 'bg-red-600', 'text-white');
+                } else {
+                    btn.classList.add('disabled-option');
+                }
+            });
+
+            fb.innerHTML = qObj.options[optionIndex].feedback;
+            fb.classList.remove('hidden');
+            fb.classList.add(isCorrect ? 'bg-green-100' : 'bg-red-100', isCorrect ? 'text-green-800' : 'text-red-800', 'border', isCorrect ? 'border-green-400' : 'border-red-400');
+
+            if (isCorrect) {
+                // 如果答對，且不是最後一題，1.5秒後顯示下一題
+                if (qIndex < stage.questions.length - 1) {
+                    setTimeout(() => {
+                        const nextQ = document.getElementById(`q-block-${stageIndex}-${qIndex + 1}`);
+                        nextQ.classList.remove('hidden');
+                        scrollToEl(`q-block-${stageIndex}-${qIndex + 1}`);
+                    }, 1200);
+                } 
+                // 如果是最後一題，顯示總結補充，然後進入下一關或遊戲
+                else {
+                    setTimeout(() => {
+                        document.getElementById(`supplement-${stageIndex}`).classList.remove('hidden');
+                        scrollToEl(`supplement-${stageIndex}`);
+                        
+                        setTimeout(() => {
+                            if (stage.postGame) {
+                                launchMiniGame(stage.postGame);
+                            } else {
+                                nextStage();
+                            }
+                        }, 4500); // 留4.5秒給學生閱讀補充資料
+                    }, 1000);
+                }
+            } else {
+                // 答錯，3秒後重置
+                setTimeout(() => {
+                    fb.classList.add('hidden');
+                    fb.className = "hidden mt-4 p-4 rounded-lg font-bold text-lg animate__animated animate__fadeIn";
+                    btns.forEach((btn, idx) => { 
+                        btn.disabled = false; 
+                        btn.className = "btn-option w-full text-left p-4 rounded bg-white border-2 border-gray-400 text-lg font-bold text-gray-800 flex items-start hover:bg-gray-50 transition"; 
+                        btn.querySelector('span:first-child').className = `mr-3 mt-1 inline-block bg-gray-200 px-2 py-0.5 rounded text-sm text-gray-800`;
+                    });
+                }, 3000);
+            }
+        }
+
+        function nextStage() {
+            currentStageIndex++;
+            if (currentStageIndex < stages.length) renderStage(currentStageIndex);
+            else showAssessment();
+        }
+
+        // --- 互動小遊戲區 (嚴格保留) ---
+        function launchMiniGame(gameId) {
+            const container = document.getElementById('minigame-container');
+            let html = `<div id="${gameId}" class="bg-blue-50 border-l-8 border-blue-500 p-6 rounded retro-shadow animate__animated animate__fadeInUp my-8">`;
+            
+            if (gameId === 'game1') {
+                html += `
+                    <h3 class="text-2xl font-bold text-blue-900 mb-4"><i class="fa-solid fa-puzzle-piece"></i> 幹部隨堂考：背景填充</h3>
+                    <p class="text-lg mb-4 leading-loose">一五計劃完成後，黨內出現了 <select id="g1-1" class="border p-1 bg-white font-bold"><option value="">--請選擇--</option><option value="保守">保守</option><option value="冒進">冒進</option></select> 氣氛。面對蘇聯的撤資，中共決定 <select id="g1-2" class="border p-1 bg-white font-bold"><option value="">--請選擇--</option><option value="自力更新">自力更新</option><option value="尋求美援">尋求美援</option></select>，提出在十五年內 <select id="g1-3" class="border p-1 bg-white font-bold"><option value="">--請選擇--</option><option value="和平共處">和平共處</option><option value="超英趕美">超英趕美</option></select>。</p>
+                    <button onclick="checkGame1()" class="game-btn bg-blue-600 text-white px-6 py-2 rounded font-bold hover:bg-blue-700">提交答案</button>
+                    <p id="g1-fb" class="mt-3 font-bold hidden"></p>
+                `;
+            } else if (gameId === 'game2') {
+                html += `
+                    <h3 class="text-2xl font-bold text-blue-900 mb-4"><i class="fa-solid fa-layer-group"></i> 幹部隨堂考：政策分類</h3>
+                    <p class="mb-4">請將下列關鍵字歸類至正確的運動中 (拖拽或點擊)：</p>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="border-2 border-gray-400 p-4 bg-white rounded" ondrop="drop(event, 'industry')" ondragover="allowDrop(event)">
+                            <h4 class="font-bold text-center border-b border-gray-300 pb-2 mb-2 text-gray-700">工業大躍進</h4><div id="g2-industry" class="min-h-[60px] p-2 bg-gray-50 rounded"></div>
+                        </div>
+                        <div class="border-2 border-gray-400 p-4 bg-white rounded" ondrop="drop(event, 'agriculture')" ondragover="allowDrop(event)">
+                            <h4 class="font-bold text-center border-b border-gray-300 pb-2 mb-2 text-gray-700">農業大躍進</h4><div id="g2-agriculture" class="min-h-[60px] p-2 bg-gray-50 rounded"></div>
+                        </div>
+                    </div>
+                    <div id="g2-items" class="flex gap-3 flex-wrap mb-6 bg-white p-4 border rounded">
+                        <span id="i1" draggable="true" ondragstart="drag(event)" class="bg-blue-100 text-blue-900 font-bold p-2 rounded cursor-grab border border-blue-300 shadow-sm">全民大煉鋼</span>
+                        <span id="i2" draggable="true" ondragstart="drag(event)" class="bg-blue-100 text-blue-900 font-bold p-2 rounded cursor-grab border border-blue-300 shadow-sm">深耕密植</span>
+                        <span id="i3" draggable="true" ondragstart="drag(event)" class="bg-blue-100 text-blue-900 font-bold p-2 rounded cursor-grab border border-blue-300 shadow-sm">土高爐</span>
+                        <span id="i4" draggable="true" ondragstart="drag(event)" class="bg-blue-100 text-blue-900 font-bold p-2 rounded cursor-grab border border-blue-300 shadow-sm">衛星田</span>
+                    </div>
+                    <button onclick="checkGame2()" class="game-btn bg-blue-600 text-white px-6 py-2 rounded font-bold hover:bg-blue-700">檢查分類</button>
+                    <p id="g2-fb" class="mt-3 font-bold hidden"></p>
+                `;
+            } else if (gameId === 'game3') {
+                html += `
+                    <h3 class="text-2xl font-bold text-blue-900 mb-4"><i class="fa-solid fa-check-double"></i> 幹部隨堂考：公社是非題</h3>
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between items-center bg-white p-4 border rounded shadow-sm">
+                            <span class="font-medium text-gray-800">1. 人民公社實行多勞多得的工資制度。</span>
+                            <div><button onclick="ansG3(1, true)" id="g3-1-t" class="px-4 py-1 border border-gray-400 rounded mr-2 hover:bg-gray-200">是</button><button onclick="ansG3(1, false)" id="g3-1-f" class="px-4 py-1 border border-gray-400 rounded hover:bg-gray-200">非</button></div>
+                        </div>
+                        <div class="flex justify-between items-center bg-white p-4 border rounded shadow-sm">
+                            <span class="font-medium text-gray-800">2. 公共食堂初期「放開肚皮吃飯」，造成巨大浪費。</span>
+                            <div><button onclick="ansG3(2, true)" id="g3-2-t" class="px-4 py-1 border border-gray-400 rounded mr-2 hover:bg-gray-200">是</button><button onclick="ansG3(2, false)" id="g3-2-f" class="px-4 py-1 border border-gray-400 rounded hover:bg-gray-200">非</button></div>
+                        </div>
+                    </div>
+                    <button onclick="checkGame3()" class="game-btn bg-blue-600 text-white px-6 py-2 rounded font-bold hover:bg-blue-700">提交答案</button>
+                    <p id="g3-fb" class="mt-3 font-bold hidden"></p>
+                `;
+            }
+            html += `</div>`;
+            container.insertAdjacentHTML('beforeend', html);
+            scrollToEl(gameId);
+        }
+
+        function checkGame1() {
+            const a = document.getElementById('g1-1').value;
+            const b = document.getElementById('g1-2').value;
+            const c = document.getElementById('g1-3').value;
+            const fb = document.getElementById('g1-fb');
+            if (a === '冒進' && b === '自力更新' && c === '超英趕美') {
+                fb.innerHTML = "✅ 填充正確！完全掌握歷史背景。"; fb.className = "mt-3 font-bold text-green-700 block";
+                setTimeout(nextStage, 2000);
+            } else {
+                fb.innerHTML = "❌ 答案有誤，請再仔細回想剛才推理的過程。"; fb.className = "mt-3 font-bold text-red-600 block";
+            }
+        }
+
+        function allowDrop(ev) { ev.preventDefault(); }
+        function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+        function drop(ev, cat) {
+            ev.preventDefault();
+            const data = ev.dataTransfer.getData("text");
+            const el = document.getElementById(data);
+            if(ev.target.id === `g2-${cat}` || ev.target.parentElement.id === `g2-${cat}`) {
+                document.getElementById(`g2-${cat}`).appendChild(el);
+            }
+        }
+        function checkGame2() {
+            const ind = Array.from(document.getElementById('g2-industry').children).map(e=>e.id);
+            const agr = Array.from(document.getElementById('g2-agriculture').children).map(e=>e.id);
+            const fb = document.getElementById('g2-fb');
+            if(ind.includes('i1') && ind.includes('i3') && agr.includes('i2') && agr.includes('i4') && ind.length===2 && agr.length===2) {
+                fb.innerHTML = "✅ 分類正確！"; fb.className = "mt-3 font-bold text-green-700 block";
+                setTimeout(nextStage, 2000);
+            } else {
+                fb.innerHTML = "❌ 分類有誤，請再試一次。"; fb.className = "mt-3 font-bold text-red-600 block";
+            }
+        }
+
+        let g3Ans = {1: null, 2: null};
+        function ansG3(q, val) {
+            g3Ans[q] = val;
+            document.getElementById(`g3-${q}-t`).classList.remove('bg-gray-800', 'text-white');
+            document.getElementById(`g3-${q}-f`).classList.remove('bg-gray-800', 'text-white');
+            document.getElementById(`g3-${q}-${val?'t':'f'}`).classList.add('bg-gray-800', 'text-white');
+        }
+        function checkGame3() {
+            const fb = document.getElementById('g3-fb');
+            if(g3Ans[1] === false && g3Ans[2] === true) {
+                fb.innerHTML = "✅ 判斷正確！公社是供給制（大鍋飯）而非多勞多得。"; fb.className = "mt-3 font-bold text-green-700 block";
+                setTimeout(nextStage, 2000);
+            } else {
+                fb.innerHTML = "❌ 判斷有誤，請重新思考人民公社的制度缺陷。"; fb.className = "mt-3 font-bold text-red-600 block";
+            }
+        }
+
+        // --- 總結評估 ---
+        function showAssessment() {
+            const container = document.getElementById('assessment-container');
+            const html = `
+                <div id="final-assessment" class="bg-gray-900 text-white rounded-xl p-8 retro-shadow animate__animated animate__zoomIn border-t-8 border-party-red">
+                    <h2 class="text-3xl font-bold text-red-500 mb-6 border-b border-gray-700 pb-4"><i class="fa-solid fa-file-signature"></i> 最終總結評估</h2>
+                    <p class="mb-6 text-gray-300 text-lg">同志，經過一連串的政策連鎖推理，我們見證了歷史悲劇的必然。請完成測驗，解鎖您的專屬溫習筆記：</p>
+                    <div class="space-y-6">
+                        <div class="assessment-q bg-gray-800 p-5 rounded border border-gray-700">
+                            <p class="font-bold mb-3 text-lg text-yellow-400">1. 導致「高徵購」並直接引發大饑荒的基層行為是什麼？</p>
+                            <select id="aq1" class="w-full text-black p-3 rounded font-medium"><option value="">--請選擇答案--</option><option value="A">A. 農民拒絕繳納公糧</option><option value="B">B. 基層為迎合上級，誇大農產量形成「浮誇風」</option></select>
+                        </div>
+                        <div class="assessment-q bg-gray-800 p-5 rounded border border-gray-700">
+                            <p class="font-bold mb-3 text-lg text-yellow-400">2. 「全民大煉鋼」運動帶來了什麼結果？</p>
+                            <select id="aq2" class="w-full text-black p-3 rounded font-medium"><option value="">--請選擇答案--</option><option value="A">A. 煉出大量廢鐵，浪費資源並因抽調人力嚴重荒廢農作</option><option value="B">B. 大幅提升了農業用具的質量與鋼鐵工業基礎</option></select>
+                        </div>
+                        <div class="assessment-q bg-gray-800 p-5 rounded border border-gray-700">
+                            <p class="font-bold mb-3 text-lg text-yellow-400">3. 人民公社的「大鍋飯」造成了什麼負面影響？</p>
+                            <select id="aq3" class="w-full text-black p-3 rounded font-medium"><option value="">--請選擇答案--</option><option value="A">A. 提升了全國農村人民的整體營養水平</option><option value="B">B. 取消按勞取酬嚴重挫傷生產積極性，並造成食堂糧食驚人浪費</option></select>
+                        </div>
+                    </div>
+                    <button onclick="checkAssessment()" class="mt-8 w-full py-4 bg-red-700 hover:bg-red-600 font-bold rounded text-xl transition-colors shadow-lg">提交最終評估</button>
+                    <p id="assess-fb" class="mt-6 font-bold text-center text-xl hidden"></p>
+                </div>
+            `;
+            container.innerHTML = html;
+            scrollToEl('final-assessment');
+        }
+
+        function checkAssessment() {
+            const q1 = document.getElementById('aq1').value;
+            const q2 = document.getElementById('aq2').value;
+            const q3 = document.getElementById('aq3').value;
+            const fb = document.getElementById('assess-fb');
+
+            if(q1 === 'B' && q2 === 'A' && q3 === 'B') {
+                fb.innerHTML = "<i class='fa-solid fa-medal'></i> 滿分通關！您已完全掌握三面紅旗的因果鍊。正在為您生成檔案筆記...";
+                fb.className = "mt-6 font-bold text-center text-xl text-green-400 block animate__animated animate__pulse";
+                setTimeout(showNotes, 2500);
+            } else {
+                fb.innerHTML = "<i class='fa-solid fa-triangle-exclamation'></i> 部分答案錯誤，請回顧剛才的因果推理再試一次。";
+                fb.className = "mt-6 font-bold text-center text-xl text-red-400 block animate__animated animate__headShake";
+            }
+        }
+
+        // --- 全新改版的加強版 PEEL 溫習筆記 ---
+        function showNotes() {
+            const container = document.getElementById('notes-container');
+            const noteContent = `【歷史溫習筆記：三面紅旗運動的因果與教訓】
+建國初期一五計畫超額完成（工農業增長達18%），加上中蘇交惡，中共急欲「自力更新」並提出「15年趕超英國」的口號。在此「急功冒進」的政治狂熱下，推行了三面紅旗（總路線、大躍進、人民公社）。
+
+一、工業大躍進 (盲目追求高指標)
+• 現象：實施「以鋼為綱」，要求1958年鋼產量翻倍（達1070萬噸）。
+• 措施與荒謬：因缺乏現代設備，發動近9000萬人上陣進行「全民大煉鋼」。把農具、鐵鍋砸碎投入土高爐熔煉。
+• 惡果(Explanation & Link)：煉出的大部分是毫無工業價值的廢鐵疙瘩（1108萬噸鋼中合格者僅約800萬噸，土法煉鐵全不合格）。不僅耗費巨資、砍伐樹木破壞生態，更因強行抽調大量農村青壯年勞動力，導致農田裡的莊稼無人收割而爛在地裡，直接拖垮了農業基礎。
+
+二、農業大躍進 (違背科學與浮誇造假)
+• 現象：推行「以糧為綱」，盲目推廣「深耕密植」與「衛星田」。
+• 措施與荒謬：不顧土壤結構與光照需求，過度密植導致作物惡性競爭枯死，實際畝產大幅下降。然而，為迎合上級、避免被批鬥，基層幹部競相虛報產量，報紙大肆吹噓「畝產萬斤甚至十萬斤」，形成全國性的「浮誇風」。
+• 惡果(Explanation & Link)：中央根據「假高產」下達了致命的「高徵購」硬任務。為了湊齊徵購額，幹部發動反瞞產私分，動用酷刑將農民活命的口糧、隔年的種子糧與牲畜飼料糧全數搜刮一空，切斷了農民的生路。
+
+三、人民公社 (烏托邦制度摧毀生產力)
+• 現象：農村全面推行「一大二公」（規模大、全社公有）。
+• 措施與荒謬：沒收自留地，取消多勞多得的工資制，改為分配平均主義的「大鍋飯」和供給制；設立公共食堂實行「吃飯不要錢」。
+• 惡果(Explanation & Link)：分配制度的絕對平均，讓社員覺得「幹多幹少一個樣」，徹底摧毀了農民的生產積極性，導致農產量停滯甚至倒退。同時，公共食堂初期放開肚皮吃，管理極度混亂，導致糧食驚人浪費。
+
+四、最終結果 (三年困難時期的人道災難)
+• 綜合結論(Point & Link)：
+三面紅旗是一場由「政治狂熱凌駕科學」、「浮誇謊言誤導決策」以及「大鍋飯消滅生產力」所共同交織的歷史悲劇。在【農業減產 + 高徵購奪糧 + 公共食堂耗盡庫存】的三重夾擊下，虛假的糧倉迅速見底。農村無糧可食又無種可播，最終直接引發了1959-1961年的「三年困難時期」，造成全國數千萬人非正常死亡的慘痛代價。`;
+
+            const html = `
+                <div id="final-notes" class="bg-vintage-paper border-t-8 border-party-red p-8 retro-shadow relative animate__animated animate__fadeInUp">
+                    <button onclick="copyNotes()" class="absolute top-6 right-6 bg-gray-800 text-white px-5 py-2 rounded hover:bg-gray-700 transition font-bold shadow"><i class="fa-solid fa-copy mr-2"></i>一鍵輸出筆記</button>
+                    <h2 class="text-3xl font-black text-party-red mb-6 border-b-2 border-red-300 pb-3"><i class="fa-solid fa-book-bookmark mr-2"></i>三面紅旗溫習筆記 (PEEL深化版)</h2>
+                    <div id="note-text" class="text-gray-900 leading-loose text-lg whitespace-pre-line font-medium">${noteContent}</div>
+                </div>
+            `;
+            container.innerHTML = html;
+            scrollToEl('final-notes');
+        }
+
+        function copyNotes() {
+            const text = document.getElementById('note-text').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert("✅ 筆記已成功複製！您可以直接貼上至您的溫習文檔或筆記軟體中。");
+            }).catch(err => {
+                alert("複製失敗，請手動選取複製。");
+            });
+        }
+
+        function scrollToEl(id) {
+            setTimeout(() => { document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 150);
+        }
+
+        window.onload = () => renderStage(currentStageIndex);
+    </script>
+</body>
+</html>
