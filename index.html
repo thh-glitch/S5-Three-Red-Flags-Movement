@@ -366,7 +366,7 @@
                         const nextQ = document.getElementById(`q-block-${stageIndex}-${qIndex + 1}`);
                         nextQ.classList.remove('hidden');
                         scrollToEl(`q-block-${stageIndex}-${qIndex + 1}`);
-                    }, 1200);
+                    }, 600);
                 } 
                 // 如果是最後一題，顯示總結補充，然後進入下一關或遊戲
                 else {
@@ -380,7 +380,7 @@
                             } else {
                                 nextStage();
                             }
-                        }, 4500); // 留4.5秒給學生閱讀補充資料
+                        }, 2500); // 留4.5秒給學生閱讀補充資料
                     }, 1000);
                 }
             } else {
@@ -465,7 +465,7 @@
             const fb = document.getElementById('g1-fb');
             if (a === '冒進' && b === '自力更新' && c === '超英趕美') {
                 fb.innerHTML = "✅ 填充正確！完全掌握歷史背景。"; fb.className = "mt-3 font-bold text-green-700 block";
-                setTimeout(nextStage, 2000);
+                setTimeout(nextStage, 1000);
             } else {
                 fb.innerHTML = "❌ 答案有誤，請再仔細回想剛才推理的過程。"; fb.className = "mt-3 font-bold text-red-600 block";
             }
@@ -487,7 +487,7 @@
             const fb = document.getElementById('g2-fb');
             if(ind.includes('i1') && ind.includes('i3') && agr.includes('i2') && agr.includes('i4') && ind.length===2 && agr.length===2) {
                 fb.innerHTML = "✅ 分類正確！"; fb.className = "mt-3 font-bold text-green-700 block";
-                setTimeout(nextStage, 2000);
+                setTimeout(nextStage, 1000);
             } else {
                 fb.innerHTML = "❌ 分類有誤，請再試一次。"; fb.className = "mt-3 font-bold text-red-600 block";
             }
@@ -504,7 +504,7 @@
             const fb = document.getElementById('g3-fb');
             if(g3Ans[1] === false && g3Ans[2] === true) {
                 fb.innerHTML = "✅ 判斷正確！公社是供給制（大鍋飯）而非多勞多得。"; fb.className = "mt-3 font-bold text-green-700 block";
-                setTimeout(nextStage, 2000);
+                setTimeout(nextStage, 1000);
             } else {
                 fb.innerHTML = "❌ 判斷有誤，請重新思考人民公社的制度缺陷。"; fb.className = "mt-3 font-bold text-red-600 block";
             }
